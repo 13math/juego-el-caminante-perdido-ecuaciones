@@ -1,0 +1,171 @@
+<!-- Juego: El Caminante Perdido (Ecuaciones) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Caminante Perdido (Ecuaciones)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .game-container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 500px;
+            background-color: #fff;
+            border: 2px solid #6c757d;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .path {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+        }
+        .path span {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ccc;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        .player {
+            background-color: #007bff;
+            color: white;
+        }
+        input {
+            font-size: 18px;
+            padding: 10px;
+            width: calc(100% - 22px);
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .feedback {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .equation {
+            font-size: 1.5em;
+            margin: 15px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>El Caminante Perdido (Ecuaciones)</h1>
+    <p>Ayuda al caminante a llegar al final resolviendo ecuaciones de primer grado.</p>
+    <div class="game-container">
+        <div class="path" id="path"></div>
+        <p class="equation" id="equation"></p>
+        <input type="text" id="answer" placeholder="Ingresa el valor de x">
+        <button onclick="checkAnswer()">Enviar</button>
+        <p class="feedback" id="feedback"></p>
+    </div>
+
+    <script>
+        let currentPosition = 0;
+        let goalPosition = 10;
+        let currentProblem = generateProblem();
+
+        const pathElement = document.getElementById('path');
+        const equationElement = document.getElementById('equation');
+        const feedbackElement = document.getElementById('feedback');
+
+        function generateProblem() {
+            const a = Math.floor(Math.random() * 10) + 1; // Coeficiente de x
+            const b = Math.floor(Math.random() * 20) - 10; // Término independiente
+            const x = Math.floor(Math.random() * 10); // Solución
+            const c = a * x + b; // Resultado de la ecuación
+            return {
+                equation: `${a}x + ${b} = ${c}`,
+                answer: x
+            };
+        }
+
+        function updatePath() {
+            pathElement.innerHTML = '';
+            for (let i = 0; i <= goalPosition; i++) {
+                const span = document.createElement('span');
+                span.textContent = i;
+                if (i === currentPosition) {
+                    span.classList.add('player');
+                }
+                pathElement.appendChild(span);
+            }
+        }
+
+        function updateEquation() {
+            equationElement.textContent = `Resuelve: ${currentProblem.equation}`;
+        }
+
+        function checkAnswer() {
+            const playerAnswer = parseInt(document.getElementById('answer').value);
+
+            if (isNaN(playerAnswer)) {
+                feedbackElement.textContent = 'Por favor, ingresa un número válido.';
+                feedbackElement.style.color = 'red';
+                return;
+            }
+
+            if (playerAnswer === currentProblem.answer) {
+                currentPosition++;
+                feedbackElement.textContent = '¡Correcto! Avanzas un paso.';
+                feedbackElement.style.color = 'green';
+                if (currentPosition === goalPosition) {
+                    feedbackElement.textContent = '¡Felicidades! Has llegado al final del camino.';
+                    feedbackElement.style.color = 'blue';
+                    resetGame();
+                } else {
+                    currentProblem = generateProblem();
+                }
+            } else {
+                currentPosition = Math.max(0, currentPosition - 1);
+                feedbackElement.textContent = 'Incorrecto. Retrocedes un paso.';
+                feedbackElement.style.color = 'orange';
+            }
+
+            updatePath();
+            updateEquation();
+            document.getElementById('answer').value = '';
+        }
+
+        function resetGame() {
+            setTimeout(() => {
+                currentPosition = 0;
+                currentProblem = generateProblem();
+                feedbackElement.textContent = '';
+                updatePath();
+                updateEquation();
+            }, 3000);
+        }
+
+        updatePath();
+        updateEquation();
+    </script>
+</body>
+</html>
