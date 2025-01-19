@@ -101,8 +101,10 @@
             const b = Math.floor(Math.random() * 20) - 10; // Término independiente
             const x = Math.floor(Math.random() * 10); // Solución
             const c = a * x + b; // Resultado de la ecuación
+
+            const formattedB = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
             return {
-                equation: `${a}x + ${b} = ${c}`,
+                equation: `${a}x ${formattedB} = ${c}`,
                 answer: x
             };
         }
